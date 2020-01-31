@@ -1,7 +1,7 @@
 import React from 'react';
-import QuestionBar from './QuestionBar'
-import Flag from './Flag';
-import Game from './Game';
+import QuestionBar from 'components/QuestionBar'
+import Flag from 'components/Flag';
+import Game from 'components/Game';
 import './App.css';
 
 function App() {
