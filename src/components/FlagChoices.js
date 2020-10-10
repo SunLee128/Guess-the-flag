@@ -2,7 +2,7 @@ import React from 'react';
 import StyledButton from './StyledButton';
 import './FlagChoices.css';
 
-const FlagChoices = props => {
+const FlagChoices = (props) => {
   const options = props.options || [];
   const { handleChange, handleSubmit } = props;
   const inputs = options.map(opt => (

@@ -1,58 +1,65 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect} from 'react';
 import FlagQuestion, { QuestionStates } from './FlagQuestion.js';
 import shuffle from 'shuffle-array';
 
-class Game extends Component {
-  constructor (props) {
-    super(props);
+const Game = () =>  {
 
-    this.state = {
-      countries: [],
-      options: [],
-      correctOption: undefined,
-      questionState: undefined
-    };
+    const [countries, setCountries] = useState([])
+    const [options, setOptions] = useState([])
+    const [correctOption, setCorrectOption] = useState(undefined)
+    const [questionState, setQuestionState] = useState(undefined)
+    // this.state = {
+    //   countries: [],
+    //   options: [],
+    //   correctOption: undefined,
+    //   questionState: undefined
+    // };
 
-    this.onGuess = this.onGuess.bind(this);
-    this.nextQuestion = this.nextQuestion.bind(this);
-  }
+  useEffect(
+    () => {
+      fetch('https://restcountries.eu/rest/v2/all')
+        .then(resp => resp.json())
+        .then(countries => {
+          const correctOption = Math.floor(Math.random() * countries.length);
+          const options = _getOptions(correctOption, countries);
+          setCountries(countries)
+          setCorrectOption(correctOption)
+          setOptions(options)
+          setQuestionState(QuestionStates.QUESTION)
+          // this.setState({
+          //   countries,
+          //   correctOption,
+          //   options,
+          //   questionState: QuestionStates.QUESTION
+          // });
+        })
+        .catch(console.warn);
+    }, []
+  )
 
-  componentDidMount () {
-    fetch('https://restcountries.eu/rest/v2/all')
-      .then(resp => resp.json())
-      .then(countries => {
-        const correctOption = Math.floor(Math.random() * countries.length);
-        const options = this._getOptions(correctOption, countries);
-        this.setState({
-          countries,
-          correctOption,
-          options,
-          questionState: QuestionStates.QUESTION
-        });
-      })
-      .catch(console.warn);
-  }
-
-  onGuess (answer) {
-    const { correctOption } = this.state;
+  const onGuess = (answer)=> {
+    // const { correctOption } = this.state;
     const questionState = answer === correctOption
       ? QuestionStates.ANSWER_CORRECT
       : QuestionStates.ANSWER_WRONG;
-    this.setState({ questionState });
+    setCorrectOption({ questionState });
   }
 
-  nextQuestion () {
-    const { countries } = this.state;
+  const nextQuestion = () =>{
+    // const { countries } = this.state;
     const correctOption = Math.floor(Math.random() * countries.length);
-    const options = this._getOptions(correctOption, countries);
-    this.setState({
-      correctOption,
-      options,
-      questionState: QuestionStates.QUESTION
-    });
+    const options = _getOptions(correctOption, countries);
+    setCorrectOption(correctOption)
+    setOptions(options)
+    setQuestionState(QuestionStates.QUESTION)
+    // this.setState({
+    //   correctOption,
+    //   options,
+    //   questionState: QuestionStates.QUESTION
+    // });
   }
 
-  _getOptions (correctOption, countries) {
+  const _getOptions = (correctOption, countries) => {
     const options = [correctOption];
     let tries = 0;
     while (options.length < 4 && tries < 15) {
@@ -66,13 +73,14 @@ class Game extends Component {
     return shuffle(options);
   }
 
-  render () {
-    const {
-      countries,
-      correctOption,
-      options,
-      questionState
-    } = this.state;
+
+    // const {
+    //   countries,
+    //   correctOption,
+    //   options,
+    //   questionState
+    // } = this.state;
+
     let output = <div>Loading...</div>;
     if (correctOption !== undefined) {
       const { flag, name } = countries[correctOption];
@@ -85,8 +93,8 @@ class Game extends Component {
       output = (
         <FlagQuestion
           answerText={name}
-          onGuess={this.onGuess}
-          onNext={this.nextQuestion}
+          onGuess={onGuess}
+          onNext={nextQuestion}
           options={opts}
           questionState={questionState}
           flag={flag}
@@ -98,7 +106,7 @@ class Game extends Component {
         {output}
       </div>
     );
-  }
+ 
 }
 
 export default Game;

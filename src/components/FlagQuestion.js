@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import FlagChoices from './FlagChoices'
 import FlagAnswer from './FlagAnswer';
 import './FlagQuestion.css';
@@ -9,47 +9,42 @@ const QuestionStates = {
   ANSWER_CORRECT: 3
 };
 
-
-class FlagQuestion extends Component {
-  static defaultProps = {
-    options: []
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      userChoice: undefined,
-    }
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleChange(e) {
-    this.setState({userChoice: Number(e.target.value)});
-  }
-
-  handleSubmit(e) {
-    e.preventDefault();
-    this.props.onGuess(this.state.userChoice);
-  }
-
-  render() {
-    const {
-      flag,
+const FlagQuestion = ({flag,
+      onGuess,
       questionState,
       options,
       answerText,
-      onNext
-    } = this.props;
-    const {userChoice} = this.state;
+      onNext}) => {
+  // static defaultProps = {
+  //   options: []
+  // }
+
+  const [userChoice, setUserChoice] = useState(undefined)
+
+  const handleChange = (e) => {
+    setUserChoice({userChoice: Number(e.target.value)});
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onGuess(userChoice);
+  }
+
+    // const {
+    //   flag,
+    //   questionState,
+    //   options,
+    //   answerText,
+    //   onNext
+    // } = this.props;
+    // const {userChoice} = this.state;
     let opts = options.map(opt => ({
       ...opt,
       checked: userChoice === opt.id
     }));
     let output = questionState === QuestionStates.QUESTION ?
-      (<FlagChoices handleChange={this.handleChange}
-                   handleSubmit={this.handleSubmit}
+      (<FlagChoices handleChange={()=>handleChange}
+                   handleSubmit={()=>handleSubmit}
                    options={opts} />) :
       (<FlagAnswer
         correct={questionState === QuestionStates.ANSWER_CORRECT}
@@ -66,7 +61,7 @@ class FlagQuestion extends Component {
          />
       </div>
     );
-  }
+  
 }
 
 export default FlagQuestion;
