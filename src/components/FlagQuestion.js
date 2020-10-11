@@ -15,9 +15,6 @@ const FlagQuestion = ({flag,
       options,
       answerText,
       onNext}) => {
-  // static defaultProps = {
-  //   options: []
-  // }
 
   const [userChoice, setUserChoice] = useState(undefined)
 
@@ -43,9 +40,9 @@ const FlagQuestion = ({flag,
       checked: userChoice === opt.id
     }));
     let output = questionState === QuestionStates.QUESTION ?
-      (<FlagChoices handleChange={()=>handleChange}
-                   handleSubmit={()=>handleSubmit}
-                   options={opts} />) :
+      (<FlagChoices handleChange={handleChange}
+                    handleSubmit={handleSubmit}
+                    options={opts} />) :
       (<FlagAnswer
         correct={questionState === QuestionStates.ANSWER_CORRECT}
         answer={answerText}
@@ -55,14 +52,16 @@ const FlagQuestion = ({flag,
       <div>
         {output}
         <img
-           className="flag-img"
-           src={flag}
-           alt="Guess the flag"
+            className="flag-img"
+            src={flag}
+            alt="Guess the flag"
          />
       </div>
     );
   
 }
-
+FlagQuestion.defaultProps = {
+    options: []
+  }
 export default FlagQuestion;
 export { QuestionStates };

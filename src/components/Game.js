@@ -8,30 +8,33 @@ const Game = () =>  {
     const [options, setOptions] = useState([])
     const [correctOption, setCorrectOption] = useState(undefined)
     const [questionState, setQuestionState] = useState(undefined)
-    // this.state = {
-    //   countries: [],
-    //   options: [],
-    //   correctOption: undefined,
-    //   questionState: undefined
-    // };
 
   useEffect(
     () => {
       fetch('https://restcountries.eu/rest/v2/all')
         .then(resp => resp.json())
         .then(countries => {
-          const correctOption = Math.floor(Math.random() * countries.length);
-          const options = _getOptions(correctOption, countries);
-          setCountries(countries)
-          setCorrectOption(correctOption)
-          setOptions(options)
-          setQuestionState(QuestionStates.QUESTION)
+// console.log(fetchedCountries)
+          //the answer of the question
+          let correctOption = Math.floor(Math.random() * countries.length);
+          //get 4 options 
+          let options = _getOptions(correctOption, countries);//array
+          
+          setCountries(()=> countries)
+          setCorrectOption(()=>correctOption)
+          setOptions(()=>options)
+          setQuestionState(()=> QuestionStates.QUESTION)
+          console.log(countries)
+          console.log(correctOption)
+          console.log(options)
+          console.log(questionState)
           // this.setState({
           //   countries,
           //   correctOption,
           //   options,
           //   questionState: QuestionStates.QUESTION
           // });
+          // console.log(countries)
         })
         .catch(console.warn);
     }, []
@@ -39,7 +42,7 @@ const Game = () =>  {
 
   const onGuess = (answer)=> {
     // const { correctOption } = this.state;
-    const questionState = answer === correctOption
+    let questionState = answer === correctOption
       ? QuestionStates.ANSWER_CORRECT
       : QuestionStates.ANSWER_WRONG;
     setCorrectOption({ questionState });
@@ -47,8 +50,8 @@ const Game = () =>  {
 
   const nextQuestion = () =>{
     // const { countries } = this.state;
-    const correctOption = Math.floor(Math.random() * countries.length);
-    const options = _getOptions(correctOption, countries);
+    let correctOption = Math.floor(Math.random() * countries.length);
+    let options = _getOptions(correctOption, countries);
     setCorrectOption(correctOption)
     setOptions(options)
     setQuestionState(QuestionStates.QUESTION)
@@ -60,10 +63,10 @@ const Game = () =>  {
   }
 
   const _getOptions = (correctOption, countries) => {
-    const options = [correctOption];
+    let options = [correctOption];
     let tries = 0;
     while (options.length < 4 && tries < 15) {
-      const option = Math.floor(Math.random() * countries.length);
+      let option = Math.floor(Math.random() * countries.length);
       if (options.indexOf(option) === -1) {
         options.push(option);
       } else {
@@ -106,7 +109,7 @@ const Game = () =>  {
         {output}
       </div>
     );
- 
+
 }
 
 export default Game;
